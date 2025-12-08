@@ -2,18 +2,37 @@ import streamlit as st
 import requests
 import json
 
+# --- GESTIÓN DEL ESTADO DE LA BARRA LATERAL ---
+if 'sidebar_state' not in st.session_state:
+    st.session_state.sidebar_state = 'expanded'
+
 st.set_page_config(
     page_title="ExamGen AI - Generador Inteligente de Exámenes",
     page_icon="🎓",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state=st.session_state.sidebar_state
 )
 
 st.markdown("""
 <style>
+
+    
     /* Importar fuentes modernas */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
     
+    .block-container {
+        max-width: 100% !important;
+        padding-top: 2rem !important;
+        padding-right: 2rem !important;
+        padding-left: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+    /* --- NUEVO: BLOQUEAR EL TAMAÑO DE LA BARRA LATERAL --- */
+    section[data-testid="stSidebar"] {
+        width: 400px !important; /* Ancho fijo */
+        min-width: 400px !important;
+        max-width: 400px !important;
+    }
     /* Variables de tema */
     :root {
         --primary: #6366f1;
@@ -173,9 +192,13 @@ st.markdown("""
         cursor: pointer !important;
         transition: all 0.2s ease !important;
         font-family: 'Inter', sans-serif !important;
-        color: var(--neutral-700) !important;
+        color: #000000 !important;
     }
     
+            .stRadio > div > label p {
+        color: #000000 !important;
+    }
+            
     .stRadio > div > label:hover {
         border-color: var(--primary-light) !important;
         background: var(--neutral-50) !important;
@@ -565,6 +588,7 @@ if boton_generar and archivo_pdf:
                 st.session_state.respuestas_usuario = {}
                 st.session_state.matching_pairs = {}
                 st.session_state.matching_selected_left = {}
+                st.session_state.sidebar_state = 'collapsed'
                 st.success("Examen generado exitosamente")
                 st.rerun()
             else:

@@ -13,9 +13,10 @@ class Pregunta(BaseModel):
     enunciado: str
     # Opciones es opcional porque 'respuesta_corta' no tiene opciones visibles
     opciones: Optional[List[str]] = None 
+    items_izquierda: Optional[List[str]] = None  # Para preguntas de asociación
     # Para ordenamiento, la respuesta correcta es la lista ordenada
     # Para choice, es el texto de la correcta
-    respuesta_correcta: str | List[str] 
+    respuesta_correcta: Union[str, List[str], Dict[str, str]]
     explicacion: str
 
 # Modelo para el examen completo

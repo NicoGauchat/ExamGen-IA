@@ -23,25 +23,36 @@ def generate_exam_questions(text: str):
     
     REGLAS ESTRICTAS:
     1. CANTIDAD: Genera AL MENOS 50 preguntas (o tantas como el texto permita sin inventar).
-    2. VARIEDAD: Mezcla tipos de preguntas.
-    3. TIPO "ASOCIACIÓN": Incluye preguntas de unir conceptos con definiciones. En 'opciones' pon la lista desordenada de definiciones y en 'enunciado' los conceptos a unir.
-    4. OPCIÓN "NINGUNA DE LAS ANTERIORES": En las preguntas 'multiple_choice', asegúrate de incluir la opción "Ninguna de las anteriores" en algunas preguntas (no en todas, hazlo aleatorio, unas 0, 1 o 2 veces por cada 10 preguntas). A veces debe ser la correcta, a veces no.
-    5. ALEATORIEDAD: No repitas patrones. Haz que cada examen se sienta único.
+    2. VARIEDAD: Mezcla tipos de preguntas (multiple_choice, verdadero_falso, asociacion, respuesta_corta).
+    3. TIPO "ASOCIACIÓN": 
+       - 'items_izquierda': Lista de conceptos.
+       - 'opciones': Lista de definiciones (desordenadas).
+       - 'respuesta_correcta': Un objeto JSON que mapee cada concepto con su definición correcta.
+    4. OPCIÓN "NINGUNA DE LAS ANTERIORES": En las preguntas 'multiple_choice', incluye esta opción aleatoriamente.
+    5. ALEATORIEDAD: No repitas patrones.
     
-    ESTRUCTURA DEL JSON (Mismos campos, nuevo tipo 'asociacion'):
+    ESTRUCTURA DEL JSON (Ejemplos de cómo deben verse los distintos tipos):
     {
-        "titulo": "Título",
-        "tema_principal": "Tema",
+        "titulo": "Título del Examen",
+        "tema_principal": "Tema General",
         "preguntas": [
             {
                 "id": 1,
                 "tipo": "asociacion",
-                "enunciado": "Une los conceptos: A) Perro, B) Gato",
-                "opciones": ["1) Ladra", "2) Maúlla"],
-                "respuesta_correcta": "A-1, B-2",
-                "explicacion": "Justificación"
+                "enunciado": "Une los conceptos con sus definiciones correspondientes",
+                "items_izquierda": ["Concepto A", "Concepto B"],
+                "opciones": ["Definición para B", "Definición para A"],
+                "respuesta_correcta": {"Concepto A": "Definición para A", "Concepto B": "Definición para B"},
+                "explicacion": "Justificación de la unión."
             },
-            ... (otros tipos)
+            {
+                "id": 2,
+                "tipo": "multiple_choice",
+                "enunciado": "¿Cuál es la capital de Francia?",
+                "opciones": ["Madrid", "París", "Berlín"],
+                "respuesta_correcta": "París",
+                "explicacion": "París es la capital de Francia."
+            }
         ]
     }
     """
