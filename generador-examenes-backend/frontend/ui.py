@@ -27,11 +27,14 @@ st.markdown("""
         padding-left: 2rem !important;
         padding-bottom: 2rem !important;
     }
-    /* --- NUEVO: BLOQUEAR EL TAMAÑO DE LA BARRA LATERAL --- */
-    section[data-testid="stSidebar"] {
-        width: 400px !important; /* Ancho fijo */
+            
+         section[data-testid="stSidebar"][aria-expanded="true"] {
+        width: 400px !important;
         min-width: 400px !important;
         max-width: 400px !important;
+    }   
+   section[data-testid="stSidebar"] {
+        width: 400px;
     }
     /* Variables de tema */
     :root {
