@@ -9,7 +9,7 @@ class Opcion(BaseModel):
 # Modelo base para una pregunta
 class Pregunta(BaseModel):
     id: int
-    tipo: Literal['multiple_choice', 'ordenamiento', 'respuesta_corta', 'verdadero_falso']
+    tipo: Literal['multiple_choice', 'ordenamiento', 'respuesta_corta', 'verdadero_falso', 'asociacion']
     enunciado: str
     # Opciones es opcional porque 'respuesta_corta' no tiene opciones visibles
     opciones: Optional[List[str]] = None 

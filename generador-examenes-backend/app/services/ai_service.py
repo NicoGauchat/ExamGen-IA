@@ -13,53 +13,37 @@ client = Groq(
 )
 
 def generate_exam_questions(text: str):
-    """
-    Envía el texto a Groq (Llama 3) y recibe un JSON estructurado.
-    """
     
+ 
     system_prompt = """
-    Eres un profesor experto y estricto creando exámenes técnicos universitarios.
+    Eres un profesor experto y creativo creando exámenes universitarios.
     
     TU OBJETIVO:
-    Generar un examen basado EXCLUSIVAMENTE en el texto proporcionado.
+    Generar un examen exhaustivo basado EXCLUSIVAMENTE en el texto proporcionado.
     
-    FORMATO DE SALIDA:
-    Debes responder ÚNICAMENTE con un objeto JSON válido. No escribas introducciones como "Aquí tienes el JSON", solo el JSON.
+    REGLAS ESTRICTAS:
+    1. CANTIDAD: Genera AL MENOS 50 preguntas (o tantas como el texto permita sin inventar).
+    2. VARIEDAD: Mezcla tipos de preguntas.
+    3. TIPO "ASOCIACIÓN": Incluye preguntas de unir conceptos con definiciones. En 'opciones' pon la lista desordenada de definiciones y en 'enunciado' los conceptos a unir.
+    4. OPCIÓN "NINGUNA DE LAS ANTERIORES": En las preguntas 'multiple_choice', asegúrate de incluir la opción "Ninguna de las anteriores" en algunas preguntas (no en todas, hazlo aleatorio, unas 0, 1 o 2 veces por cada 10 preguntas). A veces debe ser la correcta, a veces no.
+    5. ALEATORIEDAD: No repitas patrones. Haz que cada examen se sienta único.
     
-    ESTRUCTURA DEL JSON:
+    ESTRUCTURA DEL JSON (Mismos campos, nuevo tipo 'asociacion'):
     {
-        "titulo": "Título descriptivo del examen",
-        "tema_principal": "Tema central del texto",
+        "titulo": "Título",
+        "tema_principal": "Tema",
         "preguntas": [
             {
                 "id": 1,
-                "tipo": "multiple_choice",
-                "enunciado": "¿Pregunta?",
-                "opciones": ["A", "B", "C", "D"],
-                "respuesta_correcta": "La opción correcta exacta",
-                "explicacion": "Breve justificación."
+                "tipo": "asociacion",
+                "enunciado": "Une los conceptos: A) Perro, B) Gato",
+                "opciones": ["1) Ladra", "2) Maúlla"],
+                "respuesta_correcta": "A-1, B-2",
+                "explicacion": "Justificación"
             },
-            {
-                "id": 2,
-                "tipo": "verdadero_falso",
-                "enunciado": "Afirmación.",
-                "respuesta_correcta": "Verdadero", 
-                "explicacion": "Justificación."
-            },
-            {
-                "id": 3,
-                "tipo": "respuesta_corta",
-                "enunciado": "Pregunta de respuesta breve.",
-                "respuesta_correcta": "Respuesta (máx 3 palabras)",
-                "explicacion": "Contexto."
-            }
+            ... (otros tipos)
         ]
     }
-    
-    REGLAS:
-    1. Genera 5 preguntas mezclando los tipos.
-    2. Si el texto es técnico, las preguntas deben ser difíciles.
-    3. Asegúrate de que el JSON esté bien formado.
     """
 
     try:
@@ -71,16 +55,15 @@ def generate_exam_questions(text: str):
                 },
                 {
                     "role": "user",
-                    "content": f"Genera el examen para este texto: {text[:20000]}"
+                    # Añadimos una instrucción extra al final para reforzar la unicidad
+                    "content": f"Genera un examen completamente nuevo y diferente a los habituales para este texto. Texto: {text[:30000]}"
                 }
             ],
-            # Usamos Llama 3.3 Versatile (Rápido, inteligente y maneja bien JSON)
             model="llama-3.3-70b-versatile",
-            
-            # Esto fuerza a la IA a devolver JSON sí o sí
             response_format={"type": "json_object"}, 
             
-            temperature=0.3,
+            # SUBIMOS LA TEMPERATURA PARA MAYOR VARIEDAD (Antes 0.3 -> Ahora 0.7 o 0.8)
+            temperature=0.7, 
         )
 
         # Procesamos la respuesta
