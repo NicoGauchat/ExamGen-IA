@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional, Literal
+from typing import List, Optional, Literal, Union, Dict  # <--- Faltaban Union y Dict
 
 # Modelo para una opción (usado en Multiple Choice)
 class Opcion(BaseModel):
@@ -16,7 +16,7 @@ class Pregunta(BaseModel):
     items_izquierda: Optional[List[str]] = None  # Para preguntas de asociación
     # Para ordenamiento, la respuesta correcta es la lista ordenada
     # Para choice, es el texto de la correcta
-    respuesta_correcta: Union[str, List[str], Dict[str, str]]
+    respuesta_correcta: Union[str, List[str], Dict[str, str], bool]
     explicacion: str
 
 # Modelo para el examen completo
@@ -24,3 +24,8 @@ class ExamenGenerado(BaseModel):
     titulo: str
     tema_principal: str
     preguntas: List[Pregunta]
+
+# --- IMPORTANTE: ESTO SOLUCIONA EL ERROR "NOT FULLY DEFINED" ---
+# Obligamos a Pydantic a terminar de construir los modelos antes de usarlos
+Pregunta.model_rebuild()
+ExamenGenerado.model_rebuild()

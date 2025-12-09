@@ -1,6 +1,8 @@
 import streamlit as st
 import requests
 import json
+import random       # <--- NUEVO
+import difflib
 
 # --- GESTIÓN DEL ESTADO DE LA BARRA LATERAL ---
 if 'sidebar_state' not in st.session_state:
@@ -437,12 +439,19 @@ if 'matching_selected_left' not in st.session_state:
 
 # --- FUNCIONES AUXILIARES PARA ASOCIACIÓN ---
 def init_matching_state(pregunta_id, items_izq, items_der):
-    """Inicializa el estado de emparejamiento para una pregunta"""
+    """Inicializa el estado de emparejamiento y MEZCLA las opciones"""
     if pregunta_id not in st.session_state.matching_pairs:
         st.session_state.matching_pairs[pregunta_id] = {}
     if pregunta_id not in st.session_state.matching_selected_left:
         st.session_state.matching_selected_left[pregunta_id] = None
-
+    
+    # NUEVO: Guardar el orden mezclado en session_state para que no cambie al hacer clic
+    key_shuffled = f"shuffled_{pregunta_id}"
+    if key_shuffled not in st.session_state:
+        # Copiamos y mezclamos la lista de la derecha
+        opciones_mezcladas = items_der.copy()
+        random.shuffle(opciones_mezcladas)
+        st.session_state[key_shuffled] = opciones_mezcladas
 def select_left_item(pregunta_id, item):
     """Selecciona un ítem de la izquierda"""
     st.session_state.matching_selected_left[pregunta_id] = item
@@ -461,13 +470,16 @@ def remove_pair(pregunta_id, item_left):
             del st.session_state.matching_pairs[pregunta_id][item_left]
 
 def render_matching_question(pregunta, pregunta_num):
-    """Renderiza una pregunta de asociación con interfaz interactiva premium"""
+    """Renderiza una pregunta de asociación con opciones mezcladas"""
     pregunta_id = pregunta['id']
     items_izq = pregunta.get('items_izquierda', [])
-    items_der = pregunta.get('opciones', [])
+    items_der = pregunta.get('opciones', []) # Estas vienen del JSON (quizás ordenadas)
     
-    # Inicializar estado
+    # Inicializar estado y mezclar si es necesario
     init_matching_state(pregunta_id, items_izq, items_der)
+    
+    # RECUPERAR la lista mezclada
+    shuffled_right = st.session_state[f"shuffled_{pregunta_id}"]
     
     st.markdown("""
     <div style='background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%); 
@@ -514,7 +526,7 @@ def render_matching_question(pregunta, pregunta_num):
     
     with col_right:
         st.markdown("<div class='matching-header'>Definiciones</div>", unsafe_allow_html=True)
-        for item in items_der:
+        for item in shuffled_right:
             if item in paired_right:
                 st.button(
                     f"✓ {item}",
@@ -718,15 +730,22 @@ if st.session_state.examen:
                         st.warning("No respondiste esta pregunta")
                         st.info(f"**Respuesta correcta:** {respuesta_correcta}")
                     else:
-                        es_correcto = str(respuesta_user).strip().lower() == str(respuesta_correcta).strip().lower()
-                        
-                        if es_correcto:
-                            st.success(f"**Correcto** • Tu respuesta: {respuesta_user}")
-                            puntos_obtenidos += 1
-                            aciertos += 1
-                        else:
-                            st.error(f"**Incorrecto** • Tu respuesta: {respuesta_user}")
-                            st.info(f"**Respuesta correcta:** {respuesta_correcta}")
+                       if pregunta['tipo'] == 'respuesta_corta':
+                            # Usamos SequenceMatcher para ver qué tanto se parecen
+                            similitud = difflib.SequenceMatcher(None, str(respuesta_user).lower().strip(), str(respuesta_correcta).lower().strip()).ratio()
+                            
+                            if similitud >= 0.85: # 85% igual o más -> Correcto
+                                st.success(f"**Correcto** • Tu respuesta: {respuesta_user}")
+                                puntos_obtenidos += 1
+                                aciertos += 1
+                            elif similitud >= 0.5: # Entre 50% y 85% -> Medio bien
+                                st.warning(f"**Casi Correcto** (Similitud: {int(similitud*100)}%) • Tu respuesta: {respuesta_user}")
+                                st.info(f"**La respuesta exacta era:** {respuesta_correcta}")
+                                puntos_obtenidos += 0.5 # Damos medio punto
+                                # No sumamos 'aciertos' completos
+                            else:
+                                st.error(f"**Incorrecto** • Tu respuesta: {respuesta_user}")
+                                st.info(f"**Respuesta correcta:** {respuesta_correcta}")
                 
                 if pregunta.get('explicacion'):
                     with st.expander("Ver explicación detallada"):
