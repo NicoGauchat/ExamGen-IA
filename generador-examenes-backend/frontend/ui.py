@@ -1,10 +1,10 @@
 import streamlit as st
 import requests
 import json
-import random       # <--- NUEVO
+import random      
 import difflib
 
-# --- GESTIÓN DEL ESTADO DE LA BARRA LATERAL ---
+
 if 'sidebar_state' not in st.session_state:
     st.session_state.sidebar_state = 'expanded'
 
@@ -19,7 +19,7 @@ st.markdown("""
 <style>
 
     
-    /* Importar fuentes modernas */
+  
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
     
     .block-container {
@@ -53,7 +53,7 @@ st.markdown("""
         --neutral-700: #404040;
         --neutral-800: #262626;
         --neutral-900: #171717;
-        --neutral-400: #a1a1aa; /* Added neutral-400 for placeholder text */
+        --neutral-400: #a1a1aa; 
     }
     
     /* Estilos globales */
@@ -62,7 +62,7 @@ st.markdown("""
         background: linear-gradient(135deg, #fafafa 0%, #f0f0f5 100%);
     }
     
-    /* Título principal con efecto premium */
+    /* Título principal*/
     h1 {
         font-family: 'Inter', sans-serif !important;
         font-weight: 800 !important;
@@ -93,7 +93,7 @@ st.markdown("""
         margin-top: 1.5rem !important;
     }
     
-    /* Cards con diseño glassmorphism */
+
     .stContainer > div {
         background: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(10px);
@@ -110,7 +110,7 @@ st.markdown("""
         transform: translateY(-2px);
     }
     
-    /* Botones premium */
+   
     .stButton > button {
         font-family: 'Inter', sans-serif !important;
         font-weight: 600 !important;
@@ -147,7 +147,7 @@ st.markdown("""
         color: var(--primary) !important;
     }
     
-    /* Fixed text color for inputs and textareas */
+   
     .stTextInput > div > div > input,
     .stTextArea > div > div > textarea {
         border-radius: 10px !important;
@@ -170,14 +170,14 @@ st.markdown("""
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
     }
     
-    /* Fixed text color for input labels */
+ 
     .stTextInput > label,
     .stTextArea > label {
         color: var(--neutral-700) !important;
         font-weight: 500 !important;
     }
     
-    /* Radio buttons modernos */
+ 
     .stRadio > label {
         font-weight: 500 !important;
         color: var(--neutral-700) !important;
@@ -188,7 +188,7 @@ st.markdown("""
         gap: 0.75rem !important;
     }
     
-    /* Fixed text color for radio button options */
+ 
     .stRadio > div > label {
         background: white !important;
         border: 2px solid var(--neutral-200) !important;
@@ -216,7 +216,7 @@ st.markdown("""
         color: var(--primary) !important;
     }
     
-    /* Alertas y mensajes con diseño moderno */
+ 
     .stAlert {
         border-radius: 12px !important;
         border: none !important;
@@ -224,21 +224,21 @@ st.markdown("""
         font-family: 'Inter', sans-serif !important;
     }
     
-    /* Success messages */
+  
     .stSuccess {
         background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%) !important;
         border-left: 4px solid var(--success) !important;
         color: var(--neutral-800) !important;
     }
     
-    /* Error messages */
+
     .stError {
         background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%) !important;
         border-left: 4px solid var(--danger) !important;
         color: var(--neutral-800) !important;
     }
     
-    /* Warning messages */
+   
     .stWarning {
         background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%) !important;
         border-left: 4px solid var(--warning) !important;
@@ -252,7 +252,7 @@ st.markdown("""
         color: var(--neutral-800) !important;
     }
     
-    /* Fixed sidebar text colors */
+ 
     [data-testid="stSidebar"] {
         background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%) !important;
         border-right: 1px solid rgba(99, 102, 241, 0.1) !important;
@@ -274,7 +274,7 @@ st.markdown("""
         color: var(--neutral-700) !important;
     }
     
-    /* Redesigned file uploader with glassmorphism and better aesthetics */
+    
     [data-testid="stFileUploader"] {
         background: rgba(255, 255, 255, 0.5) !important;
         backdrop-filter: blur(10px) !important;
@@ -328,7 +328,7 @@ st.markdown("""
         transform: translateY(-2px) !important;
     }
     
-    /* Expander moderno */
+   
     .streamlit-expanderHeader {
         background: white !important;
         border-radius: 10px !important;
@@ -344,7 +344,7 @@ st.markdown("""
         background: var(--neutral-50) !important;
     }
     
-    /* Divisores elegantes */
+
     hr {
         margin: 2rem 0 !important;
         border: none !important;
@@ -352,7 +352,7 @@ st.markdown("""
         background: linear-gradient(90deg, transparent 0%, var(--neutral-300) 50%, transparent 100%) !important;
     }
     
-    /* Métricas con diseño moderno */
+
     [data-testid="stMetric"] {
         background: white !important;
         padding: 1.5rem !important;
@@ -371,12 +371,12 @@ st.markdown("""
         color: var(--primary) !important;
     }
     
-    /* Spinner personalizado */
+
     .stSpinner > div {
         border-color: var(--primary) !important;
     }
     
-    /* Badge de pregunta */
+  
     .question-badge {
         display: inline-block;
         background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
@@ -389,7 +389,7 @@ st.markdown("""
         box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
     }
     
-    /* Contenedor de matching con diseño premium */
+
     .matching-container {
         background: white;
         border-radius: 12px;
@@ -407,7 +407,7 @@ st.markdown("""
         letter-spacing: 0.05em;
     }
     
-    /* Animaciones suaves */
+  
     @keyframes fadeIn {
         from {
             opacity: 0;
@@ -445,10 +445,10 @@ def init_matching_state(pregunta_id, items_izq, items_der):
     if pregunta_id not in st.session_state.matching_selected_left:
         st.session_state.matching_selected_left[pregunta_id] = None
     
-    # NUEVO: Guardar el orden mezclado en session_state para que no cambie al hacer clic
+
     key_shuffled = f"shuffled_{pregunta_id}"
     if key_shuffled not in st.session_state:
-        # Copiamos y mezclamos la lista de la derecha
+      
         opciones_mezcladas = items_der.copy()
         random.shuffle(opciones_mezcladas)
         st.session_state[key_shuffled] = opciones_mezcladas
@@ -473,12 +473,12 @@ def render_matching_question(pregunta, pregunta_num):
     """Renderiza una pregunta de asociación con opciones mezcladas"""
     pregunta_id = pregunta['id']
     items_izq = pregunta.get('items_izquierda', [])
-    items_der = pregunta.get('opciones', []) # Estas vienen del JSON (quizás ordenadas)
+    items_der = pregunta.get('opciones', []) 
     
-    # Inicializar estado y mezclar si es necesario
+   
     init_matching_state(pregunta_id, items_izq, items_der)
     
-    # RECUPERAR la lista mezclada
+  
     shuffled_right = st.session_state[f"shuffled_{pregunta_id}"]
     
     st.markdown("""
@@ -489,11 +489,11 @@ def render_matching_question(pregunta, pregunta_num):
     </div>
     """, unsafe_allow_html=True)
     
-    # Obtener pares ya formados y selección actual
+   
     formed_pairs = st.session_state.matching_pairs.get(pregunta_id, {})
     selected_left = st.session_state.matching_selected_left.get(pregunta_id)
     
-    # Ítems ya emparejados
+    
     paired_left = set(formed_pairs.keys())
     paired_right = set(formed_pairs.values())
     
@@ -730,23 +730,32 @@ if st.session_state.examen:
                         st.warning("No respondiste esta pregunta")
                         st.info(f"**Respuesta correcta:** {respuesta_correcta}")
                     else:
-                       if pregunta['tipo'] == 'respuesta_corta':
-                            # Usamos SequenceMatcher para ver qué tanto se parecen
+                        # --- CORRECCIÓN RESPUESTA CORTA (USANDO SIMILITUD) ---
+                        if pregunta['tipo'] == 'respuesta_corta':
                             similitud = difflib.SequenceMatcher(None, str(respuesta_user).lower().strip(), str(respuesta_correcta).lower().strip()).ratio()
                             
-                            if similitud >= 0.85: # 85% igual o más -> Correcto
+                            if similitud >= 0.85:
                                 st.success(f"**Correcto** • Tu respuesta: {respuesta_user}")
                                 puntos_obtenidos += 1
                                 aciertos += 1
-                            elif similitud >= 0.5: # Entre 50% y 85% -> Medio bien
+                            elif similitud >= 0.5:
                                 st.warning(f"**Casi Correcto** (Similitud: {int(similitud*100)}%) • Tu respuesta: {respuesta_user}")
                                 st.info(f"**La respuesta exacta era:** {respuesta_correcta}")
-                                puntos_obtenidos += 0.5 # Damos medio punto
-                                # No sumamos 'aciertos' completos
+                                puntos_obtenidos += 0.5
                             else:
                                 st.error(f"**Incorrecto** • Tu respuesta: {respuesta_user}")
                                 st.info(f"**Respuesta correcta:** {respuesta_correcta}")
-                
+                        
+                        # --- CORRECCIÓN MULTIPLE CHOICE Y VERDADERO/FALSO ---
+                        else:
+                            # Comparación directa exacta
+                            if respuesta_user == respuesta_correcta:
+                                st.success(f"**Correcto** • Tu respuesta: {respuesta_user}")
+                                puntos_obtenidos += 1
+                                aciertos += 1
+                            else:
+                                st.error(f"**Incorrecto** • Tu respuesta: {respuesta_user}")
+                                st.info(f"**Respuesta correcta:** {respuesta_correcta}")
                 if pregunta.get('explicacion'):
                     with st.expander("Ver explicación detallada"):
                         st.write(pregunta['explicacion'])

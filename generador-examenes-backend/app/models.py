@@ -11,7 +11,7 @@ class Pregunta(BaseModel):
     id: int
     tipo: Literal['multiple_choice', 'ordenamiento', 'respuesta_corta', 'verdadero_falso', 'asociacion']
     enunciado: str
-    # Opciones es opcional porque 'respuesta_corta' no tiene opciones visibles
+    
     opciones: Optional[List[str]] = None 
     items_izquierda: Optional[List[str]] = None  # Para preguntas de asociación
     # Para ordenamiento, la respuesta correcta es la lista ordenada
@@ -25,7 +25,7 @@ class ExamenGenerado(BaseModel):
     tema_principal: str
     preguntas: List[Pregunta]
 
-# --- IMPORTANTE: ESTO SOLUCIONA EL ERROR "NOT FULLY DEFINED" ---
-# Obligamos a Pydantic a terminar de construir los modelos antes de usarlos
+
+
 Pregunta.model_rebuild()
 ExamenGenerado.model_rebuild()

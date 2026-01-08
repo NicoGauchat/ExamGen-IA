@@ -16,7 +16,7 @@ def extract_text_from_pdf(file: UploadFile) -> str:
             if content:
                 text += content + "\n"
         
-        # Validación básica: si no sacamos nada, algo anda mal (quizás es una imagen escaneada)
+        # Validación básica
         if not text.strip():
             raise HTTPException(status_code=400, detail="No se pudo extraer texto del PDF. Asegúrate de que no sea una imagen escaneada.")
             

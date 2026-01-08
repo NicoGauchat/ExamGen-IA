@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from app.models import ExamenGenerado
 from app.services.pdf_service import extract_text_from_pdf
-from app.services.ai_service import generate_exam_questions # <--- Importamos el servicio de IA
+from app.services.ai_service import generate_exam_questions # Importamos el servicio de IA
 
 app = FastAPI(
     title="Generador de Exámenes con IA",
@@ -12,7 +12,7 @@ app = FastAPI(
 def read_root():
     return {"status": "El servidor está corriendo correctamente 🚀"}
 
-@app.post("/generar-examen", response_model=ExamenGenerado) # <--- Recuperamos el modelo de respuesta
+@app.post("/generar-examen", response_model=ExamenGenerado) 
 async def generar_examen(archivo: UploadFile = File(...)):
     """
     Flujo completo: PDF -> Texto -> IA -> Examen JSON
@@ -25,7 +25,6 @@ async def generar_examen(archivo: UploadFile = File(...)):
     texto_pdf = extract_text_from_pdf(archivo)
 
     # 3. Generar examen con IA
-    # OJO: Si el PDF es muy corto, la IA podría quejarse, pero con tus apuntes irá bien.
     examen = generate_exam_questions(texto_pdf)
     
     return examen

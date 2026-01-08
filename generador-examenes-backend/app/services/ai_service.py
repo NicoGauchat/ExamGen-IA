@@ -24,7 +24,7 @@ def generate_exam_questions(text: str):
     REGLAS ESTRICTAS DE CONTENIDO:
     1. NO REPETIR: Está TERMINANTEMENTE PROHIBIDO generar preguntas duplicadas o muy similares. Verifica que cada pregunta evalúe un concepto distinto.
     2. COBERTURA TOTAL: Barre todo el documento de principio a fin. No te quedes solo con los primeros párrafos.
-    3. CANTIDAD: Genera AL MENOS 50 preguntas. Si el texto es corto, exprime cada detalle, pero NO INVENTES.
+    3. CANTIDAD: Genera AL MENOS 10 preguntas. Si el texto es corto, exprime cada detalle, pero NO INVENTES.
     
     REGLAS ESTRICTAS:
     2. VARIEDAD: Mezcla tipos de preguntas (multiple_choice, verdadero_falso, asociacion, respuesta_corta).
@@ -85,25 +85,25 @@ def generate_exam_questions(text: str):
                 },
                 {
                     "role": "user",
-                    # Añadimos una instrucción extra al final para reforzar la unicidad
+                   
                     "content": f"Genera un examen completamente nuevo y diferente a los habituales para este texto. Texto: {text[:30000]}"
                 }
             ],
             model="llama-3.3-70b-versatile",
             response_format={"type": "json_object"}, 
             
-            # SUBIMOS LA TEMPERATURA PARA MAYOR VARIEDAD (Antes 0.3 -> Ahora 0.7 o 0.8)
-            temperature=0.9, 
+          
+            temperature=0.4, 
         )
 
-        # Procesamos la respuesta
+       
         exam_content = chat_completion.choices[0].message.content
         exam_json = json.loads(exam_content)
         
         return exam_json
 
     except json.JSONDecodeError:
-        # A veces la IA falla en cerrar un corchete, esto nos avisa
+
         raise HTTPException(status_code=500, detail="La IA generó un formato inválido. Intenta de nuevo.")
     except Exception as e:
         print(f"Error en Groq: {e}")
